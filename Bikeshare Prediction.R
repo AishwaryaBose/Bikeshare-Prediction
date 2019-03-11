@@ -1,15 +1,4 @@
-install.packages("randomForest")
-install.packages("rattle")
-install.packages("forecast")
-install.packages("caret")
-install.packages("caretEnsemble")
-install.packages("imputeTS")
-install.packages("pacman")
-install.packages("colortools")
-install.packages("gridExtra")
-install.packages("RColorBrewer")
-install.packages("dygraphs")
-install.packages("RGtk2")
+#install and load necessary packages 
 
 library(RGtk2)
 library(readr)
@@ -37,7 +26,7 @@ library(RColorBrewer)
 #Import Data
 #===========================================================================================================
 
-day <- read_csv("H:/Sem 2/Data Analytics/Assignment_Barry/day.csv", 
+day <- read_csv("day.csv", 
                 col_types = cols(dteday = col_date(format = "%d/%m/%Y"), 
                                  holiday = col_logical(), season = col_factor(levels = c("1", "2", "3", "4")), 
                                  weathersit = col_factor(levels = c("1", "2", "3")), 
@@ -236,14 +225,6 @@ APE<-function(row){abs(row[1]-row[2])/row[1]*100}
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
 
-#----INPUTS & RESULTS-----#
-#input vals = season,mnth,holiday,weekday,workingday,weathersit,temp,hum,windspeed,cnt,X2d_later_wrkngDay,wk_avd_temp,wk_avg_hum,wk_avg_wndSpd,day_of_yr
-#seed=15; hiddenlayers=30
-#
-#MAE=2054.073839
-#MAPE=93.939068
-#-------------------------#
-
 #============================================================================
 # Iteration 2 with past 1 Week Avg of Count + past 15 day Avg of Count as input
 #============================================================================
@@ -256,18 +237,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
-
-
-#----INPUTS & RESULTS-----#
-#input vals = season,mnth,holiday,weekday,workingday,weathersit,temp,hum,windspeed,cnt,X2d_later_wrkngDay,wk_avd_temp,wk_avg_hum,wk_avg_wndSpd,day_of_yr,wk_avg_cnt,bimnth_avg_cnt,
-#seed=15; hiddenlayers=30
-#Accuracy =
-#               ME     RMSE      MAE       MPE     MAPE
-#Test set -2.48663 60.82964 46.73591 -44.17874 102.0008
-#MAE=789.608334
-#MAPE=72.673368
-#-------------------------#
-
 
 #============================================================================
 # Iteration 3 with increase in Count since past 1 week as input
@@ -283,18 +252,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
 
-
-#----INPUTS & RESULTS-----#
-#input vals = season,mnth,holiday,weekday,workingday,weathersit,temp,hum,windspeed,cnt,X2d_later_wrkngDay,wk_avd_temp,wk_avg_hum,wk_avg_wndSpd,day_of_yr,wk_avg_cnt,bimnth_avg_cnt,wk_inc_cnt
-#seed=15; hiddenlayers=30
-#Accuracy =
-#                ME     RMSE      MAE       MPE     MAPE
-#Test set -4.516057 60.55815 45.92746 -53.04019 93.00158
-#MAE=904.203633
-#MAPE=59.696872
-#-------------------------#
-
-
 #============================================================================
 # Iteration 4 after removing certain variables thru trial & error
 #============================================================================
@@ -308,19 +265,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
-
-
-#----INPUTS & RESULTS-----#
-#input vals = season,mnth,weekday,temp,hum,cnt,wk_avg_temp,wk_avg_hum,wk_avg_wndSpd,wk_avg_cnt,bimnth_avg_cnt,wk_inc_cnt
-#seed=15; hiddenlayers=30
-#
-#Accuracy =
-#
-#MAE=995.295251
-#MAPE=54.723480
-#-------------------------#
-
-
 
 #################################################################################################
 #RANDOM FOREST
@@ -342,14 +286,7 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
 
-#----------RESULT-----------#
-#accuracy=
-#
-#MAE=1855.703365
-#MAPE=89.978405
-#---------------------------#
 varImpPlot(model1)
-
 
 #============================================================================
 # Iteration 2 after removing variables through trial and error
@@ -367,14 +304,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
 
-#----------RESULT-----------#
-#accuracy=
-#
-#MAE=1651.792859
-#MAPE=83.756440
-#---------------------------#
-
-
 #################################################################################################
 #GLM
 #################################################################################################
@@ -384,13 +313,6 @@ glmMdl<- glm(data=traindata,x2d_later_cnt~season+mnth+holiday+weekday+workingday
 glmMdl.step <- step(glmMdl)
 
 summary(glmMdl.step)
-
-#---------FINAL MODEL-----------#
-#final model achieved after step itrations:
-#
-#x2d_later_cnt ~ cnt + wk_avg_cnt + bimnth_avg_cnt + wk_inc_cnt
-#AIC = 5735.8
-#-------------------------------#
 
 glmMdl_output = predict(glmMdl.step,newdata = testdata, type="response")
 
@@ -405,13 +327,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
 
-#----------RESULT-----------# 
-#accuracy:
-#
-#MAE=681.788744
-#MAPE=58.424608
-#---------------------------#
-
 #################################################################################################
 #Poisson
 #################################################################################################
@@ -421,14 +336,6 @@ poissonMdl <- glm(data = traindata, x2d_later_cnt~season+mnth+holiday+weekday+wo
 poissonMdl.step <- step(poissonMdl)
 
 summary(poissonMdl.step)
-
-#---------FINAL MODEL-----------#
-#final model achieved after step itrations:
-#
-#x2d_later_cnt ~ season + mnth + holiday + weekday + weathersit + temp + hum + windspeed + cnt + x2d_later_wrkngDay +
-#               wk_avg_temp + wk_avg_hum + wk_avg_wndSpd + day_of_yr + wk_avg_cnt + bimnth_avg_cnt + wk_inc_cnt
-#AIC = 44847
-#-------------------------------#
 
 poissonMdl_output = predict(poissonMdl.step,newdata = testdata, type="response")
 
@@ -443,13 +350,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
 
-#----------RESULT-----------#
-#accuracy:
-#
-#MAE=997.528580
-#MAPE=59.153687
-#---------------------------#
-
 #################################################################################################
 #Linear Model
 #################################################################################################
@@ -459,12 +359,6 @@ linearMdl <- lm(formula = x2d_later_cnt~season+mnth+holiday+weekday+workingday+w
 linearMdl.step <- step(linearMdl)
 
 summary(linearMdl.step)
-
-#---------FINAL MODEL-----------#
-#final model achieved after step itrations:
-#
-#x2d_later_cnt ~ cnt + wk_avg_cnt + bimnth_avg_cnt + wk_inc_cnt
-#-------------------------------#
 
 linearMdl_output = predict(linearMdl.step,newdata = testdata, type="response")
 
@@ -478,13 +372,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
-
-#----------RESULT-----------#
-#accuracy:
-#
-#MAE=681.788744
-#MAPE=58.424608
-#---------------------------#
 
 #################################################################################################
 #Ensemble Model
@@ -519,13 +406,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
 
-#----------RESULT-----------#
-#accuracy:
-#
-#MAE=1583.508054   1456.585363
-#MAPE=72.485085    66.925817
-#---------------------------#
-
 #============================================================================
 # Iteration 2 with All Variables using GLM for Stacking
 #============================================================================
@@ -548,13 +428,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
-
-#----------RESULT-----------#
-#accuracy:
-#
-#MAE=915.926615
-#MAPE=58.406168
-#---------------------------#
 
 #============================================================================
 # Iteration 3 with best performing variables from Neural Nets
@@ -579,13 +452,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
 
-#----------RESULT-----------#
-#accuracy:
-#
-#MAE = 957.880990
-#MAPE = 56.018257
-#---------------------------#
-
 #============================================================================
 # Iteration 4 after removing variables through trial and error
 #============================================================================
@@ -608,15 +474,6 @@ cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
 
 percentage_err = apply(predpairs,1,APE)
 cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
-
-#----------RESULT-----------#
-#accuracy:
-#
-#MAE=961.758985
-#MAPE=55.081096
-#---------------------------#
-
-
 
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 #
@@ -781,150 +638,3 @@ mnthlyMAPE = aggregate(na.omit(abs(testdata$error)*100/testdata$x2d_later_cnt),l
 plot(testdata$dteday,abs(testdata$error),type="l", main="Absolute Error of Model over time")
 
 barplot(mnthlyAE$x,names.arg=mnthlyAE$Group.1, xlab="Test Period Months",ylab="Mean Absolute Error",main="Absolute Error of Model over time")
-
-
-#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-#
-#TRAINING THE MODEL WITH 18 MONTHS DATA
-#
-#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-#Split into 18 lmonths & 6 months
-end_18m=as.Date("30/06/2012","%d/%m/%Y")
-sta_6m=as.Date("01/07/2012","%d/%m/%Y")
-train_18m = window(ts, start=sta, end=end_18m)
-test_6m  = window(ts, start=sta_6m, end=last)
-train_18m = as.data.frame(train_18m)
-test_6m  = as.data.frame(test_6m)
-
-#Fixing datatypes of cols as the split caused all columns to be reset to factor
-train_18m$dteday = as.Date(train_18m$dteday)
-train_18m$temp = as.numeric(as.character(train_18m$temp))
-train_18m$atemp = as.numeric(as.character(train_18m$atemp))
-train_18m$hum = as.numeric(as.character(train_18m$hum))
-train_18m$windspeed = as.numeric(as.character(train_18m$windspeed))
-train_18m$casual = as.integer(as.character(train_18m$casual))
-train_18m$registered = as.integer(as.character(train_18m$registered))
-train_18m$cnt = as.integer(as.character(train_18m$cnt))
-train_18m$x2d_later_cnt = as.integer(as.character(train_18m$x2d_later_cnt))
-train_18m$wk_tempRise = as.numeric(as.character(train_18m$wk_tempRise))
-train_18m$wk_avg_temp = as.numeric(as.character(train_18m$wk_avg_temp))
-train_18m$wk_avg_hum = as.numeric(as.character(train_18m$wk_avg_hum))
-train_18m$wk_avg_wndSpd = as.numeric(as.character(train_18m$wk_avg_wndSpd))
-train_18m$day_of_yr = as.integer(as.character(train_18m$day_of_yr))
-train_18m$wk_avg_cnt = as.numeric(as.character(train_18m$wk_avg_cnt))
-train_18m$bimnth_avg_cnt = as.numeric(as.character(train_18m$bimnth_avg_cnt))
-train_18m$wk_inc_cnt = as.integer(as.character(train_18m$wk_inc_cnt))
-
-
-test_6m$dteday = as.Date(test_6m$dteday)
-test_6m$temp = as.numeric(as.character(test_6m$temp))
-test_6m$atemp = as.numeric(as.character(test_6m$atemp))
-test_6m$hum = as.numeric(as.character(test_6m$hum))
-test_6m$windspeed = as.numeric(as.character(test_6m$windspeed))
-test_6m$casual = as.integer(as.character(test_6m$casual))
-test_6m$registered = as.integer(as.character(test_6m$registered))
-test_6m$cnt = as.integer(as.character(test_6m$cnt))
-test_6m$x2d_later_cnt = as.integer(as.character(test_6m$x2d_later_cnt))
-test_6m$wk_tempRise = as.numeric(as.character(test_6m$wk_tempRise))
-test_6m$wk_avg_temp = as.numeric(as.character(test_6m$wk_avg_temp))
-test_6m$wk_avg_hum = as.numeric(as.character(test_6m$wk_avg_hum))
-test_6m$wk_avg_wndSpd = as.numeric(as.character(test_6m$wk_avg_wndSpd))
-test_6m$day_of_yr = as.integer(as.character(test_6m$day_of_yr))
-test_6m$wk_avg_cnt = as.numeric(as.character(test_6m$wk_avg_cnt))
-test_6m$bimnth_avg_cnt = as.numeric(as.character(test_6m$bimnth_avg_cnt))
-test_6m$wk_inc_cnt = as.integer(as.character(test_6m$wk_inc_cnt))
-
-
-#create 18 month model
-model_18m <- caretList(x2d_later_cnt~season+mnth+temp+hum+cnt+wk_avg_temp+wk_avg_cnt+bimnth_avg_cnt+wk_inc_cnt,
-                       data = train_18m, trControl = trainingSequence,  methodList = algorithmList)
-stack_18m <- caretEnsemble(model_18m, trControl = stackControl)
-
-
-#checking performance of 18m model on 6m test data
-model_18m_output = predict(stack_18m, testdata, type = "raw")
-predpairs = cbind(test_6m$x2d_later_cnt,model_18m_output)
-errors = apply(predpairs,1,AE)
-cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
-percentage_err = apply(predpairs,1,APE)
-cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
-
-#Evaluating profit generated because of Model
-profitDF = cbind.data.frame(test_6m$x2d_later_cnt,model_18m_output)
-colnames(profitDF)[1]="actual"
-colnames(profitDF)[2]="preds"
-profitDF$revenue = 3*pmin(profitDF$actual,profitDF$preds)
-profitDF$cost = 2*profitDF$preds
-profitDF$profit = profitDF$revenue - profitDF$cost
-cat(sprintf("18 month Model Performance\nTotal Cost = $%f\nTotal Revenue = $%f\nTotal Profit = $%f\nProfit (as perc of exp.) = %f",
-            sum(profitDF$cost),sum(na.omit(profitDF$revenue)),sum(na.omit(profitDF$profit)),
-            sum(na.omit(profitDF$profit))*100/sum(profitDF$cost)))
-
-#------RESULT-------#
-#MAE=1659.228698
-#MAPE=169.417115
-#Total Profit = $910198.393424
-#Profit (as perc of exp.) = 41.433099
-#-------------------#
-
-#checking performance of original 12m model on 6m test data
-orgnl_mdl_output = predict(stack,newdata = test_6m, type="raw")
-predpairs = cbind(test_6m$x2d_later_cnt,orgnl_mdl_output)
-errors = apply(predpairs,1,AE)
-cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
-percentage_err = apply(predpairs,1,APE)
-cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
-
-#Evaluating profit generated because of Model
-profitDF = cbind.data.frame(test_6m$x2d_later_cnt,orgnl_mdl_output)
-colnames(profitDF)[1]="actual"
-colnames(profitDF)[2]="preds"
-profitDF$revenue = 3*pmin(profitDF$actual,profitDF$preds)
-profitDF$cost = 2*profitDF$preds
-profitDF$profit = profitDF$revenue - profitDF$cost
-cat(sprintf("Original Model Performance on 6m testdata\nTotal Cost = $%f\nTotal Revenue = $%f\nTotal Profit = $%f\nProfit (as perc of exp.) = %f",
-            sum(profitDF$cost),sum(na.omit(profitDF$revenue)),sum(na.omit(profitDF$profit)),
-            sum(na.omit(profitDF$profit))*100/sum(profitDF$cost)))
-
-#------RESULT-------#
-#MAE=1013.606176
-#MAPE=91.347825
-#Total Profit = $887767.792056
-#Profit (as perc of exp.) = 45.509544
-#-------------------#
-
-#Balancing Train Data set of 18m
-temp_df = train_18m[(train_18m$dteday>as.Date("30/06/2011","%d/%m/%Y") & train_18m$dteday<=as.Date("31/12/2011","%d/%m/%Y")),]
-train_18m = rbind(train_18m,temp_df)
-
-#create model with balanced data
-model_blncd <- caretList(x2d_later_cnt~season+mnth+temp+hum+cnt+wk_avg_temp+wk_avg_cnt+bimnth_avg_cnt+wk_inc_cnt,
-                         data = train_18m, trControl = trainingSequence,  methodList = algorithmList)
-stack_blncd <- caretEnsemble(model_blncd, trControl = stackControl)
-
-#checking performance of 18m model on 6m test data
-blncdMdl_output = predict(stack_blncd,newdata = test_6m, type="raw")
-predpairs = cbind(test_6m$x2d_later_cnt,blncdMdl_output)
-errors = apply(predpairs,1,AE)
-cat(sprintf("MAE=%f\n",mean(na.omit(errors))))
-percentage_err = apply(predpairs,1,APE)
-cat(sprintf("MAPE=%f\n",mean(na.omit(percentage_err))))
-
-#Evaluating profit generated because of Model
-profitDF = cbind.data.frame(test_6m$x2d_later_cnt,blncdMdl_output)
-colnames(profitDF)[1]="actual"
-colnames(profitDF)[2]="preds"
-profitDF$revenue = 3*pmin(profitDF$actual,profitDF$preds)
-profitDF$cost = 2*profitDF$preds
-profitDF$profit = profitDF$revenue - profitDF$cost
-cat(sprintf("18 month Balanced Model Performance\nTotal Cost = $%f\nTotal Revenue = $%f\nTotal Profit = $%f\nProfit (as perc of exp.) = %f",
-            sum(profitDF$cost),sum(na.omit(profitDF$revenue)),sum(na.omit(profitDF$profit)),
-            sum(na.omit(profitDF$profit))*100/sum(profitDF$cost)))
-
-#------RESULT-------#
-#MAE=706.171659
-#MAPE=118.700310
-#Total Profit = $910336.487866
-#Profit (as perc of exp.) = 41.432117
-#-------------------#
